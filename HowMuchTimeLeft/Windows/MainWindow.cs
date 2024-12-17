@@ -42,17 +42,26 @@ public class MainWindow : Window, IDisposable
             Plugin.Configuration.Save();
         }
 
-        if (!string.IsNullOrEmpty(Plugin.Configuration.timeLeft))
+        if (Plugin.Configuration.checkTime)
         {
-            ImGui.Text($"在上次记录时还剩下: {Plugin.Configuration.timeLeft} 秒点卡");
+            if (!string.IsNullOrEmpty(Plugin.Configuration.timeLeft))
+            {
+                ImGui.Text($"在 {Plugin.Configuration.lastSuccessRecord} 时还剩下 {Plugin.Configuration.timeLeft} 秒");
+            }
+            else
+            {
+                ImGui.Text("暂无记录。请登出后重新进入游戏。");
+            }
+
+            var showOnDTR = Plugin.Configuration.showOnDTR;
+            if (ImGui.Checkbox("在服务器信息栏上显示", ref showOnDTR))
+            {
+                Plugin.Configuration.showOnDTR = showOnDTR;
+                Plugin.Configuration.Save();
+            }
         }
 
-        var showOnDTR = Plugin.Configuration.showOnDTR;
-        if (ImGui.Checkbox("在服务器信息栏上显示", ref showOnDTR))
-        {
-            Plugin.Configuration.showOnDTR = showOnDTR;
-            Plugin.Configuration.Save();
-        }
+        ImGui.Spacing();
 
         if (ImGui.Button("重置"))
         {
@@ -62,20 +71,5 @@ public class MainWindow : Window, IDisposable
             Plugin.Configuration.Save();
         }
 
-    }
-
-    private void ToggleConfig(IFramework framework)
-    {
-        var config = Plugin.GameConfig.UiControl.GetBool("ObjectBorderingType");
-        if (Plugin.ClientState.IsGPosing && config == true)
-        {
-            Plugin.PluginLog.Debug("GPose is active -> False");
-            Plugin.GameConfig.UiControl.Set("ObjectBorderingType", false);
-        }
-        else if (!Plugin.ClientState.IsGPosing && config == false)
-        {
-            Plugin.PluginLog.Debug("Not active -> Revert");
-            Plugin.GameConfig.UiControl.Set("ObjectBorderingType", true);
-        }
     }
 }

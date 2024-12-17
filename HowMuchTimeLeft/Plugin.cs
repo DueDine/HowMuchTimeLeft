@@ -25,11 +25,11 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IGameGui GameGui { get; private set; } = null!;
     [PluginService] internal static IFramework Framework { get; private set; } = null!;
 
-    private const string CommandName = "/pmycommand";
+    private const string CommandName = "/howtimeleft";
 
     public Configuration Configuration { get; init; }
 
-    public readonly WindowSystem WindowSystem = new("SamplePlugin");
+    public readonly WindowSystem WindowSystem = new("HowMuchTimeLeft");
 
     private MainWindow MainWindow { get; init; }
 
@@ -82,7 +82,6 @@ public sealed class Plugin : IDalamudPlugin
             {
                 if (AgentLobby.Instance() != null)
                 {
-                    // If lastRecord within one hour, then return
                     if (Configuration.lastSuccessRecord != null)
                     {
                         if (DateTime.Now.Subtract(DateTime.Parse(Configuration.lastSuccessRecord)).TotalMinutes < 5)
