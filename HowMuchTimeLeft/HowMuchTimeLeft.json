@@ -1,0 +1,12 @@
+{
+  "Author": "Due",
+  "Name": "How Much Time Left",
+  "Punchline": "帮你计算点卡还有多久时间",
+  "Description": "记得打开菜单调选项",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "plugin",
+    "subscribe",
+    "timing"
+  ]
+}
