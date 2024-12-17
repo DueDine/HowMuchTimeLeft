@@ -1,0 +1,47 @@
+name: Build My Plugin
+
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+    branches:
+      - "master"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Download Dalamud
+        run: |
+          curl -O https://raw.githubusercontent.com/ottercorp/dalamud-distrib/refs/heads/main/latest.7z
+          New-Item -ItemType Directory -Force -Path "$env:AppData\XIVLauncherCN\addon\Hooks\dev\"
+          7z x latest.7z -o"$env:AppData\XIVLauncherCN\addon\Hooks\dev\"
+
+      - name: Build
+        run: |
+          dotnet build -c Release
+
+      - name: Archive
+        run: Compress-Archive -Path HowMuchTimeLeft/bin/x64/Release/* -DestinationPath HowMuchTimeLeft.zip
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            HowMuchTimeLeft.zip
